@@ -39,6 +39,10 @@ public class Result {
     }
 
     public String toString() {
-        return "Result(status='" + this.status + "', msg='" + this.msg + "')";
+        if (this.data != null) {
+            return "Result(status='" + this.status + "', msg='" + this.msg + "', data='" + this.data.toString() + "')";
+        } else {
+            return "Result(status='" + this.status + "', msg='" + this.msg + "')";
+        }
     }
 }
