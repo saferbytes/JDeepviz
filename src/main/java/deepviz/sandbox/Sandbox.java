@@ -6,9 +6,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 
-import deepviz.ResultSuccess;
-import deepviz.ResultError;
-import deepviz.Result;
+import deepviz.utils.DeepvizResultStatus;
+import deepviz.utils.Result;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -19,10 +18,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.HttpEntity;
-import org.json.JSONObject;
 import org.json.JSONArray;
-
+import java.util.List;
 import java.io.*;
+
 
 
 public class Sandbox {
@@ -32,22 +31,22 @@ public class Sandbox {
     public static final String URL_REQUEST_BULK    = "https://api.deepviz.com/sandbox/sample/bulk/request";
     public static final String URL_DOWNLOAD_BULK   = "https://api.deepviz.com/sandbox/sample/bulk/retrieve";
 
-    public Result uploadSample(String path, String api_key) {
-        if (path == null) {
-            return new ResultError("Parameters 'path' cannot be null");
+    public Result uploadSample(String api_key, String path) {
+        if (path == null || path.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "File path cannot be null or empty String");
         }
 
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         File f = new File(path);
         if (! f.exists()) {
-            return new ResultError("File does not exists");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "File does not exists");
         }
 
         if (f.isDirectory()) {
-            return new ResultError("Parameters 'path' is a directory instead of a file");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Path is a directory instead of a file");
         }
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -85,14 +84,13 @@ public class Sandbox {
 
                 JsonNode body_json = new JsonNode(str_buffer.toString());
                 if (statusCode == 200) {
-                    String data = String.valueOf(body_json.getObject().get("data"));
-                    return new ResultSuccess(String.valueOf(statusCode) + " - " + data, null);
+                    return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, body_json.getObject().get("data").toString());
                 } else {
-                    String errMsg = String.valueOf(body_json.getObject().get("errmsg"));
-                    return new ResultError(String.valueOf(statusCode) + " - " + errMsg);
+                    String errMsg = body_json.getObject().get("errmsg").toString();
+                    return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(statusCode) + " - " + errMsg);
                 }
             }catch(Exception e){
-                return new ResultError("Error while connecting to Deepviz: " + e.getMessage());
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
             } finally {
                 try {
                     if (response != null) {
@@ -107,58 +105,58 @@ public class Sandbox {
         }
     }
 
-    public Result uploadFolder(String path, String api_key) {
-        if (path == null) {
-            return new ResultError("Parameters 'path' cannot be null");
+    public Result uploadFolder(String api_key, String path) {
+        if (path == null || path.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Folder path cannot be null or empty String");
         }
 
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         File f = new File(path);
-        if (f.isDirectory()) {
-            return new ResultError("Parameters 'path' is a file instead of a directory");
-        }
-
         if (! f.exists()) {
-            return new ResultError("Folder does not exists");
+            f.mkdirs();
+        } else {
+            if (! f.isDirectory()) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Path is a file instead of a directory");
+            }
         }
 
         File[] files = f.listFiles();
-        if (files.length > 0) {
+        if (files != null && files.length > 0) {
             for (File file : files) {
                 if (file.isFile()) {
                     Result result = this.uploadSample(file.getPath(), api_key);
-                    if (result.getStatus().equals("error")) {
+                    if (result.getStatus() != DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS) {
                         result.setMsg("Unable to upload file '" + file.getPath() + "': " + result.getMsg());
                         return result;
                     }
                 }
             }
 
-            return new ResultSuccess("Every file in folder has been uploaded", null);
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Every file in folder has been uploaded");
         } else {
-            return new ResultError("Empty folder");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Empty folder");
         }
     }
 
-    public Result downloadSample(String md5, String path, String api_key) {
-        if (md5 == null) {
-            return new ResultError("Parameters 'md5' cannot be null");
+    public Result downloadSample(String api_key, String md5, String path) {
+        if (md5 == null || md5.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "MD5 cannot be null or empty String");
         }
 
-        if (path == null) {
-            return new ResultError("Parameters 'path' cannot be null");
+        if (path == null || path.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Destination path cannot be null or empty String");
         }
 
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         File f = new File(path);
         if (f.exists() && f.isFile()) {
-            return new ResultError("Parameters 'path': file already exists");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Destination file already exists");
         } else if (! f.exists()) {
             f.mkdirs();
         }
@@ -167,10 +165,10 @@ public class Sandbox {
         try {
             response = Unirest.post(Sandbox.URL_DOWNLOAD_SAMPLE)
                     .header("Content-Type", "application/json")
-                    .body("{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\", }")
+                    .body("{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\"}")
                     .asString();
         } catch (UnirestException e) {
-            return new ResultError("Error while connecting to Deepviz: " + e.getMessage());
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         if (response.getStatus() == 200) {
@@ -179,7 +177,7 @@ public class Sandbox {
             try {
                 file.createNewFile();
             } catch (Exception e) {
-                return new ResultError("Cannot create file '" + file.getAbsolutePath() + "': " + e.getMessage());
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file '" + file.getAbsolutePath() + "': " + e.getMessage());
             }
 
             OutputStream out = null;
@@ -192,7 +190,7 @@ public class Sandbox {
                     out.write(buf, 0, len);
                 }
             } catch (IOException e) {
-                return new ResultError("Error writing file: " + e.getMessage());
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error writing file: " + e.getMessage());
             } finally {
                 try {
                     in.close();
@@ -206,21 +204,21 @@ public class Sandbox {
                 }
             }
 
-            return new ResultSuccess(String.valueOf(response.getStatus()), null);
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Sample downloaded");
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = String.valueOf(response_json.getObject().get("errmsg"));
-            return new ResultError(String.valueOf(response.getStatus()) + " - " + errMsg);
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
-    public Result sampleResult(String md5, String api_key) {
-        if (md5 == null) {
-            return new ResultError("Parameters 'md5' cannot be null");
+    public Result sampleResult(String api_key, String md5) {
+        if (md5 == null || md5.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "MD5 cannot be null or empty String");
         }
 
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         HttpResponse response;
@@ -230,33 +228,37 @@ public class Sandbox {
                     .body("{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\", \"output_filters\": [\"classification\"]}")
                     .asJson();
         } catch (UnirestException e) {
-            return new ResultError("Error while connecting to Deepviz: " + e.getMessage());
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         if (response.getStatus() == 200) {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            return new ResultSuccess(String.valueOf(response.getStatus()), (JSONObject) response_json.getObject().get("data"));
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            String errMsg = String.valueOf(response_json.getObject().get("errmsg"));
-            return new ResultError(String.valueOf(response.getStatus()) + " - " + errMsg);
+            String errMsg = response_json.getObject().get("errmsg").toString();
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
-    public Result sampleReport(String md5, String api_key, JSONArray filters) {
-        if (md5 == null) {
-            return new ResultError("Parameters 'md5' cannot be null");
+    public Result sampleReport(String api_key, String md5, List<String> filters) {
+        if (md5 == null || md5.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "MD5 cannot be null or empty String");
         }
 
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         String body;
-        if (filters == null || filters.length() == 0) {
+        if (filters == null || filters.isEmpty()) {
             body = "{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\"}";
         } else {
-            body = "{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\", \"output_filters\": " + filters.toString() + "}";
+            JSONArray json_filters = new JSONArray();
+            for (String filter : filters) {
+                json_filters.put(filter);
+            }
+            body = "{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\", \"output_filters\": " + json_filters.toString() + "}";
         }
 
         HttpResponse response;
@@ -266,64 +268,69 @@ public class Sandbox {
                     .body(body)
                     .asJson();
         } catch (UnirestException e) {
-            return new ResultError("Error while connecting to Deepviz: " + e.getMessage());
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         if (response.getStatus() == 200) {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            return new ResultSuccess(String.valueOf(response.getStatus()), (JSONObject) response_json.getObject().get("data"));
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            String errMsg = String.valueOf(response_json.getObject().get("errmsg"));
-            return new ResultError(String.valueOf(response.getStatus()) + " - " + errMsg);
+            String errMsg = response_json.getObject().get("errmsg").toString();
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
-    public Result bulkDownloadRequest(JSONArray md5_list, String api_key) {
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+    public Result bulkDownloadRequest(String api_key, List<String> md5_list) {
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
-        if (md5_list == null || md5_list.length() == 0) {
-            return new ResultError("MD5 list empty or invalid.");
+        if (md5_list == null || md5_list.isEmpty()) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "MD5 list empty or invalid.");
         }
 
         HttpResponse response;
         try {
+            JSONArray json_md5 = new JSONArray();
+            for (String filter : md5_list) {
+                json_md5.put(filter);
+            }
+
             response = Unirest.post(Sandbox.URL_REQUEST_BULK)
                     .header("Content-Type", "application/json")
-                    .body("{\"api_key\":\"" + api_key + "\", \"hashes\": " + md5_list.toString() + "}")
+                    .body("{\"api_key\":\"" + api_key + "\", \"hashes\": " + json_md5.toString() + "}")
                     .asJson();
         } catch (UnirestException e) {
-            return new ResultError("Error while connecting to Deepviz: " + e.getMessage());
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         if (response.getStatus() == 200) {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            return new ResultSuccess("ID request: " + String.valueOf(response_json.getObject().get("id_request")), null);
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "ID request: " + response_json.getObject().get("id_request").toString());
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            String errMsg = String.valueOf(response_json.getObject().get("errmsg"));
-            return new ResultError(String.valueOf(response.getStatus()) + " - " + errMsg);
+            String errMsg = response_json.getObject().get("errmsg").toString();
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
-    public Result bulkDownloadRetrieve(String id_request, String path, String api_key) {
-        if (id_request == null) {
-            return new ResultError("Parameters 'id_request' cannot be null");
+    public Result bulkDownloadRetrieve(String api_key, String id_request, String path) {
+        if (id_request == null || id_request.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Request ID cannot be null or empty String");
         }
 
-        if (path == null) {
-            return new ResultError("Parameters 'path' cannot be null");
+        if (path == null || path.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Destination path cannot be null or empty String");
         }
 
-        if (api_key == null) {
-            return new ResultError("Parameters 'api_key' cannot be null");
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         File f = new File(path);
         if (f.exists() && f.isFile()) {
-            return new ResultError("Parameters 'path': file already exists");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters 'path': file already exists");
         } else if (! f.exists()) {
             f.mkdirs();
         }
@@ -335,7 +342,7 @@ public class Sandbox {
                     .body("{\"api_key\":\"" + api_key + "\", \"id_request\":\"" + id_request + "\"}")
                     .asString();
         } catch (UnirestException e) {
-            return new ResultError("Error while connecting to Deepviz: " + e.getMessage());
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         if (response.getStatus() == 200) {
@@ -345,7 +352,7 @@ public class Sandbox {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                return new ResultError("Cannot create file '" + file.getAbsolutePath() + "': " + e.getMessage());
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file '" + file.getAbsolutePath() + "': " + e.getMessage());
             }
 
             OutputStream out = null;
@@ -359,7 +366,7 @@ public class Sandbox {
                     out.write(buf, 0, len);
                 }
             } catch (IOException e) {
-                return new ResultError("Error writing file: " + e.getMessage());
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error writing file: " + e.getMessage());
             } finally {
                 try {
                     in.close();
@@ -373,11 +380,11 @@ public class Sandbox {
                 }
             }
 
-            return new ResultSuccess(String.valueOf(response.getStatus()), null);
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Archive downloaded");
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            String errMsg = String.valueOf(response_json.getObject().get("errmsg"));
-            return new ResultError(String.valueOf(response.getStatus()) + " - " + errMsg);
+            String errMsg = response_json.getObject().get("errmsg").toString();
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 }

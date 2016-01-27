@@ -1,66 +1,109 @@
-import deepviz.Result;
-import org.json.JSONArray;
-import deepviz.intel.Intel;
-import java.io.IOException;
+import deepviz.intel.input.AdvancedSearchInput;
+import deepviz.intel.input.DomainInfoInput;
+import deepviz.intel.input.IpInfoInput;
 import deepviz.sandbox.Sandbox;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import deepviz.utils.Result;
+import deepviz.intel.Intel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class JDeepvizTest {
 
     private static final String API_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-    public static void main(String [] args) throws IOException, UnirestException {
+    public static void main(String [] args) {
         Result result;
 
         Sandbox sbx = new Sandbox();
 
         // Download sample
-        result = sbx.downloadSample("a6ca3b8c79e1b7e2a6ef046b0702aeb2", ".", JDeepvizTest.API_KEY);
+        result = sbx.downloadSample(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", ".");
         System.out.println(result);
 
         // Upload sample
-        result = sbx.uploadSample("./a6ca3b8c79e1b7e2a6ef046b0702aeb2", JDeepvizTest.API_KEY);
+        result = sbx.uploadSample(JDeepvizTest.API_KEY, "./a6ca3b8c79e1b7e2a6ef046b0702aeb2");
         System.out.println(result);
 
         // Upload folder
-        sbx.uploadFolder(".", JDeepvizTest.API_KEY);
+        result = sbx.uploadFolder(".", JDeepvizTest.API_KEY);
+        System.out.println(result);
 
         // Sample result
-        result = sbx.sampleResult("a6ca3b8c79e1b7e2a6ef046b0702aeb2", JDeepvizTest.API_KEY);
+        result = sbx.sampleResult(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2");
         System.out.println(result);
-        System.out.println(result.getData().get("classification"));
 
         // Sample report
-        JSONArray filters = new JSONArray();
-        filters.put("classification");
-        System.out.println(filters.toString());
-        result = sbx.sampleReport("a6ca3b8c79e1b7e2a6ef046b0702aeb2", JDeepvizTest.API_KEY, filters);
-        System.out.println(result);
-        System.out.println(result.getData());
-
-        JSONArray md5_list = new JSONArray();
-        md5_list.put("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
-        md5_list.put("34781d4f8654f9547cc205061221aea5");
-        md5_list.put("a8c5c0d39753c97e1ffdfc6b17423dd6");
-
-        result = sbx.bulkDownloadRequest(md5_list, JDeepvizTest.API_KEY);
+        List<String> filters = new ArrayList<String>();
+        filters.add("classification");
+        result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
         System.out.println(result);
 
         // Download bulk request
-        result = sbx.bulkDownloadRetrieve("30", ".", JDeepvizTest.API_KEY);
+        List<String> md5_list = new ArrayList<String>();
+        md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
+        md5_list.add("34781d4f8654f9547cc205061221aea5");
+        md5_list.add("a8c5c0d39753c97e1ffdfc6b17423dd6");
+        result = sbx.bulkDownloadRequest(JDeepvizTest.API_KEY, md5_list);
+        System.out.println(result);
+
+        // Download bulk retrieve
+        result = sbx.bulkDownloadRetrieve(JDeepvizTest.API_KEY, "41", ".");
         System.out.println(result);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         Intel intel = new Intel();
+        IpInfoInput ipInfoInput = new IpInfoInput();
+        DomainInfoInput domainInfoinput = new DomainInfoInput();
 
-        result = intel.ipInfo(JDeepvizTest.API_KEY, "7d", false);
+        // To retrieve intel data about one or more IPs:
+        List<String> ip_list = new ArrayList<String>();
+        ip_list.add("8.8.8.8");
+
+        ipInfoInput.setIps(ip_list);
+        ipInfoInput.setHistory(true);
+
+        result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
         System.out.println(result);
 
-        JSONArray ip = new JSONArray();
-        ip.put("8.8.8.8");
-        result = intel.ipInfo(JDeepvizTest.API_KEY, ip, false);
+        // To retrieve intel data about IPs contacted in the last 7 days:
+        ipInfoInput = new IpInfoInput();
+        ipInfoInput.setTimeDelta("7d");
+        result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
+        System.out.println(result);
+
+        // To retrieve intel data about one or more domains:
+        List<String> domains1 = new ArrayList<String>();
+        domains1.add("google.com");
+
+        domainInfoinput.setDomains(domains1);
+
+        result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
+        System.out.println(result);
+
+        //To retrieve newly registered domains in the last 7 days:
+        domainInfoinput = new DomainInfoInput();
+        domainInfoinput.setTimeDelta("7d");
+        result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
+        System.out.println(result);
+
+        // To run generic search based on strings
+        // (find all IPs, domains, samples related to the searched keyword):
+        //result = intel.search(JDeepvizTest.API_KEY, "test", 0, 2);
+        result = intel.search(JDeepvizTest.API_KEY, "test");
+        System.out.println(result);
+
+        // To run advanced search based on parameters
+        // (find all MD5 samples connecting to a domain and determined as malicious):
+        List<String> domains2 = new ArrayList<String>();
+        domains2.add("justfacebook.net");
+
+        AdvancedSearchInput input = new AdvancedSearchInput();
+        input.setDomain(domains2);
+        input.setClassification("M");
+        result = intel.advancedSearch(JDeepvizTest.API_KEY, input);
         System.out.println(result);
     }
 
