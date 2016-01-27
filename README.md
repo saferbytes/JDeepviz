@@ -24,8 +24,8 @@ subscribing the service free at https://account.deepviz.com/register/
 To upload a sample:
 
 ```java
-import deepviz.Result;
 import deepviz.sandbox.Sandbox;
+import deepviz.Result;
 
 Sandbox sbx = new Sandbox();
 Result result = sbx.uploadSample("my-api-key","path\\to\\file.exe")
@@ -44,8 +44,8 @@ sbx.uploadFolder("my-api-key","path\\to\\file.exe")
 To download a sample:
 
 ```java
-import deepviz.Result;
 import deepviz.sandbox.Sandbox;
+import deepviz.Result;
 
 Sandbox sbx = new Sandbox();
 Result result = sbx.downloadSample("my-api-key", "md5-to-download", "dest-path")
@@ -55,11 +55,11 @@ System.out.println(result);
 To send a bulk download request:
 
 ```java
-import java.util.ArrayList;
-import java.util.List;
-
 import deepviz.sandbox.Sandbox;
 import deepviz.Result;
+
+import java.util.ArrayList;
+import java.util.List;
 
 List<String> md5_list = new ArrayList<String>();
 md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
@@ -73,8 +73,8 @@ System.out.println(result);
 To download the archive af a bulk download request:
 
 ```java
-import deepviz.Result;
 import deepviz.sandbox.Sandbox;
+import deepviz.Result;
 
 Sandbox sbx = new Sandbox();
 Result result = sbx.bulkDownloadRetrieve("my-api-key", "id-request", "dest-path");
@@ -84,10 +84,13 @@ System.out.println(result);
 To retrieve scan result of a specific MD5
 
 ```java
-import deepviz.Result;
 import deepviz.sandbox.Sandbox;
+import deepviz.Result;
 
- List<String> filters = new ArrayList<String>();
+import java.util.ArrayList;
+import java.util.List;
+
+List<String> filters = new ArrayList<String>();
 filters.add("classification");
 Result result = sbx.sampleResult("my-api-key", "MD5-hash", filters);
 System.out.print(result.getMsg());
