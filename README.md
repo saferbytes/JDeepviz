@@ -100,8 +100,7 @@ import java.util.List;
 import deepviz.sandbox.Sandbox;
 import deepviz.Result;
 
-List<String> filters = null;
-Result result = sbx.sampleReport("my-api-key", "MD5-hash", filters);
+Result result = sbx.sampleReport("my-api-key", "MD5-hash");
 System.out.print(result.getMsg());
 ```
 

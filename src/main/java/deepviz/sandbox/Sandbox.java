@@ -241,6 +241,10 @@ public class Sandbox {
         }
     }
 
+    public Result sampleReport(String api_key, String md5) {
+        return this.sampleReport(api_key, md5, null);
+    }
+
     public Result sampleReport(String api_key, String md5, List<String> filters) {
         if (md5 == null || md5.equals("")) {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "MD5 cannot be null or empty String");

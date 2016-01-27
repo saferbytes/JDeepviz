@@ -35,6 +35,9 @@ public class JDeepvizTest {
         System.out.println(result);
 
         // Sample report
+        result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2");
+        System.out.println(result);
+
         List<String> filters = new ArrayList<String>();
         filters.add("classification");
         result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
