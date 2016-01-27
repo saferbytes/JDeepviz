@@ -28,7 +28,7 @@ import deepviz.Result;
 import deepviz.sandbox.Sandbox;
 
 Sandbox sbx = new Sandbox();
-Result result = sbx.uploadSample("path\\to\\file.exe", "my-api-key")
+Result result = sbx.uploadSample("my-api-key","path\\to\\file.exe")
 System.out.println(result);
 ```
 
@@ -38,7 +38,7 @@ To upload a folder:
 import deepviz.sandbox.Sandbox;
 
 Sandbox sbx = new Sandbox();
-sbx.uploadFolder("path\\to\\file.exe", "my-api-key")
+sbx.uploadFolder("my-api-key","path\\to\\file.exe")
 ```
 
 To download a sample:
@@ -48,7 +48,7 @@ import deepviz.Result;
 import deepviz.sandbox.Sandbox;
 
 Sandbox sbx = new Sandbox();
-Result result = sbx.downloadSample("md5-to-download", "dest-path", "my-api-key")
+Result result = sbx.downloadSample("my-api-key", "md5-to-download", "dest-path")
 System.out.println(result);
 ```
 
@@ -66,7 +66,7 @@ md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
 md5_list.add("34781d4f8654f9547cc205061221aea5");
 md5_list.add("a8c5c0d39753c97e1ffdfc6b17423dd6");
 
-Result result =  sbx.bulkDownloadRequest(md5_list, "my-api-key")
+Result result =  sbx.bulkDownloadRequest("my-api-key", md5_list)
 System.out.println(result);
 ```
 
@@ -77,7 +77,7 @@ import deepviz.Result;
 import deepviz.sandbox.Sandbox;
 
 Sandbox sbx = new Sandbox();
-Result result = sbx.bulkDownloadRetrieve("id-request", "dest-path", "my-api-key");
+Result result = sbx.bulkDownloadRetrieve("my-api-key", "id-request", "dest-path");
 System.out.println(result);
 ```
 
@@ -87,7 +87,7 @@ To retrieve scan result of a specific MD5
 import deepviz.Result;
 import deepviz.sandbox.Sandbox;
 
-Result result = sbx.sampleResult("MD5-hash", "my-api-key");
+Result result = sbx.sampleResult("my-api-key", "MD5-hash");
 System.out.print(result.getMsg());
 ```
 
@@ -101,7 +101,7 @@ import deepviz.sandbox.Sandbox;
 import deepviz.Result;
 
 List<String> filters = null;
-Result result = sbx.sampleReport("MD5-hash", "my-api-key", filters);
+Result result = sbx.sampleReport("my-api-key", "MD5-hash", filters);
 System.out.print(result.getMsg());
 ```
 
@@ -117,7 +117,7 @@ import java.util.List;
 List<String> filters = new ArrayList<String>();
 filters.add("classification");
 filters.add("rules");
-Result result = sbx.sampleReport("MD5-hash", "my-api-key", filters);
+Result result = sbx.sampleReport("my-api-key", "MD5-hash", filters);
 
 # List of the optional filters - they can be combined together
 # "network_ip",
