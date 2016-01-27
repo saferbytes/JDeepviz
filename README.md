@@ -87,7 +87,9 @@ To retrieve scan result of a specific MD5
 import deepviz.Result;
 import deepviz.sandbox.Sandbox;
 
-Result result = sbx.sampleResult("my-api-key", "MD5-hash");
+ List<String> filters = new ArrayList<String>();
+filters.add("classification");
+Result result = sbx.sampleResult("my-api-key", "MD5-hash", filters);
 System.out.print(result.getMsg());
 ```
 
