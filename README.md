@@ -123,19 +123,19 @@ filters.add("classification");
 filters.add("rules");
 Result result = sbx.sampleReport("my-api-key", "MD5-hash", filters);
 
-# List of the optional filters - they can be combined together
-# "network_ip",
-# "network_ip_tcp",
-# "network_ip_udp",
-# "rules",
-# "classification",
-# "created_process",
-# "hook_user_mode",
-# "strings",
-# "created_files",
-# "hash",
-# "info",
-# "code_injection"
+// List of the optional filters - they can be combined together
+// "network_ip",
+// "network_ip_tcp",
+// "network_ip_udp",
+// "rules",
+// "classification",
+// "created_process",
+// "hook_user_mode",
+// "strings",
+// "created_files",
+// "hash",
+// "info",
+// "code_injection"
 
 System.out.println(result.getMsg());
 ```
@@ -188,9 +188,9 @@ import java.util.List;
 
 List<String> filters = new ArrayList<String>();
 filters.add("sub_domains");
-# List of the optional filters - they can be combined together
-# "whois",
-# "sub_domains"
+// List of the optional filters - they can be combined together
+// "whois",
+// "sub_domains"
 
 List<String> domains = new ArrayList<String>();
 domains.add("google.com");
