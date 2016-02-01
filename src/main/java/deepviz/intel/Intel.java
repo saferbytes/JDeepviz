@@ -70,7 +70,13 @@ public class Intel {
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
+            DeepvizResultStatus code;
+            if (response.getStatus() >= 500) {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_SERVER_ERROR;
+            } else {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_CLIENT_ERROR;
+            }
+            return new Result(code, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
@@ -137,7 +143,13 @@ public class Intel {
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
+            DeepvizResultStatus code;
+            if (response.getStatus() >= 500) {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_SERVER_ERROR;
+            } else {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_CLIENT_ERROR;
+            }
+            return new Result(code, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
@@ -184,7 +196,13 @@ public class Intel {
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
+            DeepvizResultStatus code;
+            if (response.getStatus() >= 500) {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_SERVER_ERROR;
+            } else {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_CLIENT_ERROR;
+            }
+            return new Result(code, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 
@@ -319,7 +337,13 @@ public class Intel {
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, String.valueOf(response.getStatus()) + " - " + errMsg);
+            DeepvizResultStatus code;
+            if (response.getStatus() >= 500) {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_SERVER_ERROR;
+            } else {
+                code = DeepvizResultStatus.DEEPVIZ_STATUS_CLIENT_ERROR;
+            }
+            return new Result(code, String.valueOf(response.getStatus()) + " - " + errMsg);
         }
     }
 }
