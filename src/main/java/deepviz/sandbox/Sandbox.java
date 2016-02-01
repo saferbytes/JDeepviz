@@ -49,6 +49,10 @@ public class Sandbox {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Path is a directory instead of a file");
         }
 
+        if(! f.canRead()) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Cannot open file '" + f.getAbsolutePath() + "'");
+        }
+
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         try {
@@ -95,7 +99,7 @@ public class Sandbox {
                     }
                     return new Result(code, String.valueOf(statusCode) + " - " + errMsg);
                 }
-            }catch(Exception e){
+            }catch(IOException e){
                 return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
             } finally {
                 try {
@@ -122,7 +126,7 @@ public class Sandbox {
 
         File f = new File(path);
         if (! f.exists()) {
-            f.mkdirs();
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Directory does not exists");
         } else {
             if (! f.isDirectory()) {
                 return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Path is a file instead of a directory");
@@ -162,9 +166,14 @@ public class Sandbox {
 
         File f = new File(path);
         if (f.exists() && f.isFile()) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Destination file already exists");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Invalid destination folder");
         } else if (! f.exists()) {
             f.mkdirs();
+        }
+
+        File file = new File(path, md5);
+        if (! f.canWrite()) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Cannot create file '" + file.getAbsolutePath() + "'");
         }
 
         HttpResponse response;
@@ -179,7 +188,6 @@ public class Sandbox {
 
         if (response.getStatus() == 200) {
             InputStream in = response.getRawBody();
-            File file = new File(path, md5);
             try {
                 file.createNewFile();
             } catch (Exception e) {
@@ -210,7 +218,7 @@ public class Sandbox {
                 }
             }
 
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Sample downloaded");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Sample downloaded to '" + file.getAbsolutePath() + "'");
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
@@ -315,7 +323,7 @@ public class Sandbox {
         }
 
         if (md5_list == null || md5_list.isEmpty()) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "MD5 list empty or invalid.");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "MD5 list empty or invalid");
         }
 
         HttpResponse response;
@@ -364,7 +372,7 @@ public class Sandbox {
 
         File f = new File(path);
         if (f.exists() && f.isFile()) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters 'path': file already exists");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Invalid destination folder");
         } else if (! f.exists()) {
             f.mkdirs();
         }

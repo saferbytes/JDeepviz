@@ -23,11 +23,11 @@ public class Intel {
 
     public Result ipInfo(String api_key, IpInfoInput input) {
         if (api_key == null || api_key.equals("")) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
         if ((input.getIps() == null || input.getIps().isEmpty()) && (input.getTimeDelta() == null || input.getTimeDelta().equals(""))) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid");
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify either a list of IPs or timestamp");
         }
 
         String strHistory = "false";
@@ -85,7 +85,11 @@ public class Intel {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null");
         }
 
-        HttpResponse response;
+        if ((input.getDomains() == null || input.getDomains().isEmpty()) && (input.getTimeDelta() == null || input.getTimeDelta().equals(""))) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify either a list of domains or TimeDelta");
+        }
+
+        HttpResponse response = null;
         if (input.getDomains() != null && ! input.getDomains().isEmpty()) {
             JSONArray json_domains = new JSONArray();
             for (String domain : input.getDomains()) {
@@ -112,7 +116,9 @@ public class Intel {
             } catch (UnirestException e) {
                 return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
             }
-        } else if (input.getTimeDelta() != null && ! input.getTimeDelta().equals("")) {
+        }
+
+        if (input.getTimeDelta() != null && ! input.getTimeDelta().equals("")) {
             try {
                 String body;
                 if (input.getFilters() == null || input.getFilters().isEmpty()) {
@@ -133,8 +139,6 @@ public class Intel {
             } catch (UnirestException e) {
                 return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
             }
-        } else {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid");
         }
 
         if (response.getStatus() == 200) {
