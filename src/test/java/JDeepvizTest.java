@@ -43,7 +43,7 @@ public class JDeepvizTest {
         result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
         System.out.println(result);
 
-        // Download bulk request
+        // Send bulk request
         List<String> md5_list = new ArrayList<String>();
         md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
         md5_list.add("34781d4f8654f9547cc205061221aea5");
@@ -52,7 +52,7 @@ public class JDeepvizTest {
         System.out.println(result);
 
         // Download bulk retrieve
-        result = sbx.bulkDownloadRetrieve(JDeepvizTest.API_KEY, "41", ".");
+        result = sbx.bulkDownloadRetrieve(JDeepvizTest.API_KEY, "3", ".");
         System.out.println(result);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,10 +64,8 @@ public class JDeepvizTest {
         // To retrieve intel data about one or more IPs:
         List<String> ip_list = new ArrayList<String>();
         ip_list.add("8.8.8.8");
-
         ipInfoInput.setIps(ip_list);
         ipInfoInput.setHistory(true);
-
         result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
         System.out.println(result);
 
@@ -80,9 +78,7 @@ public class JDeepvizTest {
         // To retrieve intel data about one or more domains:
         List<String> domains1 = new ArrayList<String>();
         domains1.add("google.com");
-
         domainInfoinput.setDomains(domains1);
-
         result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
         System.out.println(result);
 
@@ -102,7 +98,6 @@ public class JDeepvizTest {
         // (find all MD5 samples connecting to a domain and determined as malicious):
         List<String> domains2 = new ArrayList<String>();
         domains2.add("justfacebook.net");
-
         AdvancedSearchInput input = new AdvancedSearchInput();
         input.setDomain(domains2);
         input.setClassification("M");

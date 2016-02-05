@@ -343,7 +343,7 @@ public class Sandbox {
 
         if (response.getStatus() == 200) {
             JsonNode response_json = new JsonNode(response.getBody().toString());
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "ID request: " + response_json.getObject().get("id_request").toString());
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
