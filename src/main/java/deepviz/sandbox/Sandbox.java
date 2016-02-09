@@ -50,7 +50,11 @@ public class Sandbox {
         }
 
         if(! f.canRead()) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Cannot open file '" + f.getAbsolutePath() + "'");
+            try {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Cannot open file '" + f.getCanonicalPath() + "'");
+            } catch (IOException e) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, e.getMessage());
+            }
         }
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -137,9 +141,13 @@ public class Sandbox {
         if (files != null && files.length > 0) {
             for (File file : files) {
                 if (file.isFile()) {
-                    Result result = this.uploadSample(file.getPath(), api_key);
+                    Result result = this.uploadSample(api_key, file.getAbsolutePath());
                     if (result.getStatus() != DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS) {
-                        result.setMsg("Unable to upload file '" + file.getPath() + "': " + result.getMsg());
+                        try {
+                            result.setMsg("Unable to upload file '" + file.getCanonicalPath() + "': " + result.getMsg());
+                        } catch (IOException e) {
+                            result.setMsg("Unable to upload file '" + file.getPath() + "': " + result.getMsg());
+                        }
                         return result;
                     }
                 }
@@ -173,7 +181,11 @@ public class Sandbox {
 
         File file = new File(path, md5);
         if (! f.canWrite()) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Cannot create file '" + file.getAbsolutePath() + "'");
+            try {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Cannot create file '" + file.getCanonicalPath() + "'");
+            } catch (IOException e) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, e.getMessage());
+            }
         }
 
         HttpResponse response;
@@ -191,7 +203,11 @@ public class Sandbox {
             try {
                 file.createNewFile();
             } catch (Exception e) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file '" + file.getAbsolutePath() + "': " + e.getMessage());
+                try {
+                    return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file '" + file.getCanonicalPath() + "': " + e.getMessage());
+                } catch (IOException e1) {
+                    return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file: " + e.getMessage());
+                }
             }
 
             OutputStream out = null;
@@ -218,7 +234,11 @@ public class Sandbox {
                 }
             }
 
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Sample downloaded to '" + file.getAbsolutePath() + "'");
+            try {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, "Sample downloaded to '" + file.getCanonicalPath() + "'");
+            } catch (IOException e) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, e.getMessage());
+            }
         } else {
             JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
@@ -394,7 +414,11 @@ public class Sandbox {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file '" + file.getAbsolutePath() + "': " + e.getMessage());
+                try {
+                    return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file '" + file.getCanonicalPath() + "': " + e.getMessage());
+                } catch (IOException e1) {
+                    return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Cannot create file: " + e1.getMessage());
+                }
             }
 
             OutputStream out = null;

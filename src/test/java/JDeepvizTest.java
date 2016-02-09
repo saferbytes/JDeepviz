@@ -27,7 +27,7 @@ public class JDeepvizTest {
         System.out.println(result);
 
         // Upload folder
-        result = sbx.uploadFolder(".", JDeepvizTest.API_KEY);
+        result = sbx.uploadFolder(JDeepvizTest.API_KEY, ".");
         System.out.println(result);
 
         // Sample result
@@ -104,5 +104,4 @@ public class JDeepvizTest {
         result = intel.advancedSearch(JDeepvizTest.API_KEY, input);
         System.out.println(result);
     }
-
 }

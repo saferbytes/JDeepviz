@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AdvancedSearchInput {
     private List<String> createdFiles;
-    private boolean neverSeen = true;
+    private boolean neverSeen = false;
     private List<String> resultSet;
     private String classification;
     private List<String> simHash;
