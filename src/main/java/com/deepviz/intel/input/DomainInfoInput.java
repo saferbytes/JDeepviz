@@ -1,4 +1,4 @@
-package deepviz.intel.input;
+package com.deepviz.intel.input;
 
 import java.util.List;
 

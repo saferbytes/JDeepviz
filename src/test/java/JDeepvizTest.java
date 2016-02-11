@@ -1,9 +1,11 @@
-import deepviz.intel.input.AdvancedSearchInput;
-import deepviz.intel.input.DomainInfoInput;
-import deepviz.intel.input.IpInfoInput;
-import deepviz.sandbox.Sandbox;
-import deepviz.utils.Result;
-import deepviz.intel.Intel;
+import com.deepviz.intel.input.AdvancedSearchInput;
+import com.deepviz.intel.input.DomainInfoInput;
+import com.deepviz.utils.DeepvizResultStatus;
+import com.deepviz.intel.input.IpInfoInput;
+import com.mashape.unirest.http.JsonNode;
+import com.deepviz.sandbox.Sandbox;
+import com.deepviz.utils.Result;
+import com.deepviz.intel.Intel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,7 @@ public class JDeepvizTest {
         result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
         System.out.println(result);
 
-        // Send bulk request
+        // Send bulk request and retrieve the archive
         List<String> md5_list = new ArrayList<String>();
         md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
         md5_list.add("34781d4f8654f9547cc205061221aea5");
@@ -51,8 +53,15 @@ public class JDeepvizTest {
         result = sbx.bulkDownloadRequest(JDeepvizTest.API_KEY, md5_list);
         System.out.println(result);
 
-        // Download bulk retrieve
-        result = sbx.bulkDownloadRetrieve(JDeepvizTest.API_KEY, "3", ".");
+        JsonNode message_json = new JsonNode(result.getMsg());
+        do {
+            result = sbx.bulkDownloadRetrieve(JDeepvizTest.API_KEY, String.valueOf(message_json.getObject().get("id_request")), ".");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (result.getStatus() == DeepvizResultStatus.DEEPVIZ_STATUS_PROCESSING);
         System.out.println(result);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

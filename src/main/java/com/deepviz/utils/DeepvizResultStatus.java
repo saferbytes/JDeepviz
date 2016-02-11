@@ -1,4 +1,4 @@
-package deepviz.utils;
+package com.deepviz.utils;
 
 public enum DeepvizResultStatus {
     DEEPVIZ_STATUS_SUCCESS,             // Request succesfully submitted
@@ -7,4 +7,5 @@ public enum DeepvizResultStatus {
     DEEPVIZ_STATUS_SERVER_ERROR,        // HTTP 5xx
     DEEPVIZ_STATUS_NETWORK_ERROR,       // Cannot contact Deepviz
     DEEPVIZ_STATUS_INTERNAL_ERROR,
+    DEEPVIZ_STATUS_PROCESSING,           // Request succesfully submitted
 }

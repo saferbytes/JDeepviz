@@ -52,32 +52,24 @@ Result result = sbx.downloadSample("my-api-key", "md5-to-download", "dest-path")
 System.out.println(result);
 ```
 
-To send a bulk download request:
-
+Send bulk request and retrieve the archive
 ```java
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
-
-import java.util.ArrayList;
-import java.util.List;
-
 List<String> md5_list = new ArrayList<String>();
 md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
 md5_list.add("34781d4f8654f9547cc205061221aea5");
 md5_list.add("a8c5c0d39753c97e1ffdfc6b17423dd6");
-
-Result result =  sbx.bulkDownloadRequest("my-api-key", md5_list)
+result = sbx.bulkDownloadRequest(JDeepvizTest.API_KEY, md5_list);
 System.out.println(result);
-```
 
-To download the archive af a bulk download request:
-
-```java
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
-
-Sandbox sbx = new Sandbox();
-Result result = sbx.bulkDownloadRetrieve("my-api-key", "id-request", "dest-path");
+JsonNode message_json = new JsonNode(result.getMsg());
+do {
+    result = sbx.bulkDownloadRetrieve(JDeepvizTest.API_KEY, String.valueOf(message_json.getObject().get("id_request")), ".");
+    try {
+        Thread.sleep(1000);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+} while (result.getStatus() == DeepvizResultStatus.DEEPVIZ_STATUS_PROCESSING);
 System.out.println(result);
 ```
 

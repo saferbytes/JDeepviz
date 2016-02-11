@@ -1,4 +1,4 @@
-package deepviz.utils;
+package com.deepviz.utils;
 
 
 public class Result {

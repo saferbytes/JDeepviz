@@ -1,15 +1,15 @@
-package deepviz.intel;
+package com.deepviz.intel;
 
-import deepviz.intel.input.AdvancedSearchInput;
-import deepviz.intel.input.DomainInfoInput;
-import deepviz.utils.DeepvizResultStatus;
-import deepviz.utils.Result;
+import com.deepviz.intel.input.AdvancedSearchInput;
+import com.deepviz.intel.input.DomainInfoInput;
+import com.deepviz.utils.DeepvizResultStatus;
+import com.deepviz.utils.Result;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import deepviz.intel.input.IpInfoInput;
+import com.deepviz.intel.input.IpInfoInput;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -64,11 +64,16 @@ public class Intel {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Unexpected error");
         }
 
+        JsonNode response_json;
+        try {
+            response_json = new JsonNode(response.getBody().toString());
+        } catch (Exception e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error loading Deepviz response");
+        }
+
         if (response.getStatus() == 200) {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
             DeepvizResultStatus code;
             if (response.getStatus() >= 500) {
@@ -141,11 +146,16 @@ public class Intel {
             }
         }
 
+        JsonNode response_json;
+        try {
+            response_json = new JsonNode(response.getBody().toString());
+        } catch (Exception e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error loading Deepviz response");
+        }
+
         if (response.getStatus() == 200) {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
             DeepvizResultStatus code;
             if (response.getStatus() >= 500) {
@@ -194,11 +204,16 @@ public class Intel {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
+        JsonNode response_json;
+        try {
+            response_json = new JsonNode(response.getBody().toString());
+        } catch (Exception e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error loading Deepviz response");
+        }
+
         if (response.getStatus() == 200) {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
             DeepvizResultStatus code;
             if (response.getStatus() >= 500) {
@@ -335,11 +350,16 @@ public class Intel {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
+        JsonNode response_json;
+        try {
+            response_json = new JsonNode(response.getBody().toString());
+        } catch (Exception e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error loading Deepviz response");
+        }
+
         if (response.getStatus() == 200) {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
         } else {
-            JsonNode response_json = new JsonNode(response.getBody().toString());
             String errMsg = response_json.getObject().get("errmsg").toString();
             DeepvizResultStatus code;
             if (response.getStatus() >= 500) {
