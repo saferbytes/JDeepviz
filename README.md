@@ -8,9 +8,9 @@ JDeepviz is hosted by Maven central repository. Add the following dependency in 
 ```xml
 <dependencies>
     <dependency>
-        <groupId>com.mashape.unirest</groupId>
-        <artifactId>unirest-java</artifactId>
-        <version>1.4.7</version>
+        <groupId>com.deepviz</groupId>
+        <artifactId>JDeepviz</artifactId>
+        <version>1.0.1</version>
     </dependency>
 </dependencies>
 ```
