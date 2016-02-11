@@ -24,8 +24,8 @@ subscribing the service free at https://account.deepviz.com/register/
 To upload a sample:
 
 ```java
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
+import com.deepviz.sandbox.Sandbox;
+import com.deepviz.Result;
 
 Sandbox sbx = new Sandbox();
 Result result = sbx.uploadSample("my-api-key","path\\to\\file.exe")
@@ -35,7 +35,7 @@ System.out.println(result);
 To upload a folder:
 
 ```java
-import deepviz.sandbox.Sandbox;
+import com.deepviz.sandbox.Sandbox;
 
 Sandbox sbx = new Sandbox();
 sbx.uploadFolder("my-api-key","path\\to\\file.exe")
@@ -44,8 +44,8 @@ sbx.uploadFolder("my-api-key","path\\to\\file.exe")
 To download a sample:
 
 ```java
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
+import com.deepviz.sandbox.Sandbox;
+import com.deepviz.Result;
 
 Sandbox sbx = new Sandbox();
 Result result = sbx.downloadSample("my-api-key", "md5-to-download", "dest-path")
@@ -76,8 +76,8 @@ System.out.println(result);
 To retrieve scan result of a specific MD5
 
 ```java
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
+import com.deepviz.sandbox.Sandbox;
+import com.deepviz.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,8 +94,8 @@ To retrieve full scan report for a specific MD5
 import java.util.ArrayList;
 import java.util.List;
 
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
+import com.deepviz.sandbox.Sandbox;
+import com.deepviz.Result;
 
 Result result = sbx.sampleReport("my-api-key", "MD5-hash");
 System.out.print(result.getMsg());
@@ -104,8 +104,8 @@ System.out.print(result.getMsg());
 To retrieve only specific parts of the report of a specific MD5 scan
 
 ```java
-import deepviz.sandbox.Sandbox;
-import deepviz.Result;
+import com.deepviz.sandbox.Sandbox;
+import com.deepviz.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,9 +137,9 @@ System.out.println(result.getMsg());
 To retrieve intel data about one or more IPs:
 
 ```java
-import deepviz.intel.input.IpInfoInput;
-import deepviz.intel.Intel;
-import deepviz.Result;
+import com.deepviz.intel.input.IpInfoInput;
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,9 +158,9 @@ System.out.println(result);
 To retrieve intel data about IPs contacted in the last 7 days:
 
 ```java
-import deepviz.intel.input.IpInfoInput;
-import deepviz.intel.Intel;
-import deepviz.Result;
+import com.deepviz.intel.input.IpInfoInput;
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
 
 IpInfoInput input = new IpInfoInput();
 input.setTimeDelta("7d");
@@ -171,9 +171,9 @@ System.out.println(result);
 To retrieve intel data about one or more domains:
 
 ```java
-import deepviz.intel.input.DomainInfoInput;
-import deepviz.intel.Intel;
-import deepviz.Result;
+import com.deepviz.intel.input.DomainInfoInput;
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,9 +198,9 @@ System.out.println(result);
 To retrieve newly registered domains in the last 7 days:
 
 ```java
-import deepviz.intel.input.DomainInfoInput;
-import deepviz.intel.Intel;
-import deepviz.Result;
+import com.deepviz.intel.input.DomainInfoInput;
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
 
 DomainInfoInput input = new DomainInfoInput();
 input.setTimeDelta("7d");
@@ -212,8 +212,8 @@ To run generic search based on strings
 (find all IPs, domains, samples related to the searched keyword):
 
 ```java
-import deepviz.Result;
-import deepviz.intel.Intel;
+import com.deepviz.Result;
+import com.deepviz.intel.Intel;
 
 Intel intel = new Intel();
 Result result = intel.search("my-api-key", "test");
@@ -225,9 +225,9 @@ To run advanced search based on parameters
 (find all MD5 samples connecting to a domain and determined as malicious):
 
 ```java
-import deepviz.intel.input.AdvancedSearchInput;
-import deepviz.intel.Intel;
-import deepviz.Result;
+import com.deepviz.intel.input.AdvancedSearchInput;
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
 
 import java.util.ArrayList;
 import java.util.List;
