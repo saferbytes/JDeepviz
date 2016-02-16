@@ -3,17 +3,7 @@ JDeepviz is a Java wrapper for deepviz.com REST APIs
 
 # Install
 
-JDeepviz is hosted by Maven central repository. Add the following dependency in your pom.xml file.
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>com.deepviz</groupId>
-        <artifactId>JDeepviz</artifactId>
-        <version>1.0.1</version>
-    </dependency>
-</dependencies>
-```
+Download the latest release of the precompiled JAR binary from https://github.com/saferbytes/JDeepviz/releases or you can also recompile from sources as well. Make sure you always download the latest release's sources
 
 # Usage
 To use Deepviz API sdk you will need an API key you can get by
