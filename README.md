@@ -3,7 +3,9 @@ JDeepviz is a Java wrapper for deepviz.com REST APIs
 
 # Install
 
-Download the latest release of the precompiled JAR binary from https://github.com/saferbytes/JDeepviz/releases or you can also recompile from sources as well. Make sure you always download the latest release's sources
+Download the latest release of the precompiled JAR binary from https://github.com/saferbytes/JDeepviz/releases or you can also recompile from sources as well. Make sure you always download the latest release's sources.
+
+The complete Deepviz REST APIs documentation can be found at https://api.deepviz.com/docs/
 
 # Usage
 To use Deepviz API sdk you will need an API key you can get by
