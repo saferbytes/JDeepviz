@@ -29,7 +29,7 @@ public class JDeepvizTest {
         System.out.println(result);
 
         // Upload folder
-        result = sbx.uploadFolder(JDeepvizTest.API_KEY, ".");
+        result = sbx.uploadFolder(JDeepvizTest.API_KEY, "folder_to_upload");
         System.out.println(result);
 
         // Sample result
