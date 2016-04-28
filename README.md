@@ -50,6 +50,7 @@ List<String> md5_list = new ArrayList<String>();
 md5_list.add("a6ca3b8c79e1b7e2a6ef046b0702aeb2");
 md5_list.add("34781d4f8654f9547cc205061221aea5");
 md5_list.add("a8c5c0d39753c97e1ffdfc6b17423dd6");
+Sandbox sbx = new Sandbox();
 result = sbx.bulkDownloadRequest("my-api-key", md5_list);
 System.out.println(result);
 
@@ -74,6 +75,7 @@ import java.util.List;
 import com.deepviz.sandbox.Sandbox;
 import com.deepviz.Result;
 
+Sandbox sbx = new Sandbox();
 Result result = sbx.sampleReport("my-api-key", "MD5-hash");
 System.out.print(result.getMsg());
 ```
@@ -86,7 +88,9 @@ To retrieve scan result of a specific MD5
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
-Result result = sbx.sampleResult("my-api-key", "MD5-hash");
+Intel intel = new Intel();
+
+Result result = intel.sampleResult("my-api-key", "MD5-hash");
 System.out.print(result.getMsg());
 ```
 
@@ -99,10 +103,12 @@ import com.deepviz.Result;
 import java.util.ArrayList;
 import java.util.List;
 
+Intel intel = new Intel();
+
 List<String> filters = new ArrayList<String>();
 filters.add("classification");
 filters.add("rules");
-Result result = sbx.sampleInfo("my-api-key", "MD5-hash", filters);
+Result result = intel.sampleInfo("my-api-key", "MD5-hash", filters);
 
 // List of the optional filters - they can be combined together
 // "network_ip",
@@ -131,6 +137,8 @@ import com.deepviz.Result;
 import java.util.ArrayList;
 import java.util.List;
 
+Intel intel = new Intel();
+
 List<String> ip_list = new ArrayList<String>();
 ip_list.add("8.8.8.8");
 
@@ -149,8 +157,11 @@ import com.deepviz.intel.input.IpInfoInput;
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
+Intel intel = new Intel();
+
 IpInfoInput input = new IpInfoInput();
 input.setTimeDelta("7d");
+
 result = intel.ipInfo("my-api-key", input);
 System.out.println(result);
 ```
@@ -164,6 +175,8 @@ import com.deepviz.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+
+Intel intel = new Intel();
 
 List<String> filters = new ArrayList<String>();
 filters.add("sub_domains");
@@ -189,8 +202,10 @@ import com.deepviz.intel.input.DomainInfoInput;
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
+Intel intel = new Intel();
 DomainInfoInput input = new DomainInfoInput();
 input.setTimeDelta("7d");
+
 Result result = intel.domainInfo("my-api-key", input);
 System.out.println(result);
 ```
@@ -226,6 +241,7 @@ AdvancedSearchInput input = new AdvancedSearchInput();
 input.setDomain(domains);
 input.setClassification("M");
 
+Intel intel = new Intel();
 Result result = intel.advancedSearch("my-api-key", input);
 System.out.println(result);
 ```
