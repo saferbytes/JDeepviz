@@ -32,17 +32,8 @@ public class JDeepvizTest {
         result = sbx.uploadFolder(JDeepvizTest.API_KEY, "folder_to_upload");
         System.out.println(result);
 
-        // Sample result
-        result = sbx.sampleResult(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2");
-        System.out.println(result);
-
         // Sample report
         result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2");
-        System.out.println(result);
-
-        List<String> filters = new ArrayList<String>();
-        filters.add("classification");
-        result = sbx.sampleReport(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
         System.out.println(result);
 
         // Send bulk request and retrieve the archive
@@ -69,6 +60,18 @@ public class JDeepvizTest {
         Intel intel = new Intel();
         IpInfoInput ipInfoInput = new IpInfoInput();
         DomainInfoInput domainInfoinput = new DomainInfoInput();
+
+        // Sample result
+        result = intel.sampleResult(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2");
+        System.out.println(result);
+
+        // Sample info
+        List<String> filters = new ArrayList<String>();
+        filters.add("info");
+        filters.add("hash");
+        filters.add("classification");
+        result = intel.sampleInfo(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
+        System.out.println(result);
 
         // To retrieve intel data about one or more IPs:
         List<String> ip_list = new ArrayList<String>();

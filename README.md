@@ -65,21 +65,6 @@ do {
 System.out.println(result);
 ```
 
-To retrieve scan result of a specific MD5
-
-```java
-import com.deepviz.sandbox.Sandbox;
-import com.deepviz.Result;
-
-import java.util.ArrayList;
-import java.util.List;
-
-List<String> filters = new ArrayList<String>();
-filters.add("classification");
-Result result = sbx.sampleResult("my-api-key", "MD5-hash", filters);
-System.out.print(result.getMsg());
-```
-
 To retrieve full scan report for a specific MD5
 
 ```java
@@ -125,6 +110,33 @@ System.out.println(result.getMsg());
 ```
 
 # Threat Intelligence SDK API
+
+To retrieve scan result of a specific MD5
+
+```java
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
+
+Result result = sbx.sampleResult("my-api-key", "MD5-hash");
+System.out.print(result.getMsg());
+```
+
+To retrieve information about one MD5
+
+```java
+import com.deepviz.intel.Intel;
+import com.deepviz.Result;
+
+import java.util.ArrayList;
+import java.util.List;
+
+List<String> filters = new ArrayList<String>();
+filters.add("info");
+filters.add("hash");
+filters.add("classification");
+result = intel.sampleInfo("my-api-key", "MD5-hash", filters);
+System.out.print(result.getMsg());
+```
 
 To retrieve intel data about one or more IPs:
 

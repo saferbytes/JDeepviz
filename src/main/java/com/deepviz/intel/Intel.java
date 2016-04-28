@@ -13,10 +13,14 @@ import com.deepviz.intel.input.IpInfoInput;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Intel {
 
     public static final String URL_INTEL_SEARCH            = "https://api.deepviz.com/intel/search";
+    public static final String URL_INTEL_DOWNLOAD_REPORT   = "https://api.deepviz.com/intel/report";
     public static final String URL_INTEL_IP                = "https://api.deepviz.com/intel/network/ip";
     public static final String URL_INTEL_DOMAIN            = "https://api.deepviz.com/intel/network/domain";
     public static final String URL_INTEL_SEARCH_ADVANCED   = "https://api.deepviz.com/intel/search/advanced";
@@ -368,6 +372,72 @@ public class Intel {
                 code = DeepvizResultStatus.DEEPVIZ_STATUS_CLIENT_ERROR;
             }
             return new Result(code, String.valueOf(response.getStatus()) + " - " + errMsg);
+        }
+    }
+
+    public Result sampleResult(String api_key, String md5) {
+        List<String> filters = new ArrayList<String>();
+        filters.add("classification");
+
+        return this.sampleInfo(api_key, md5, filters);
+    }
+
+    public Result sampleInfo(String api_key, String md5, List<String> filters) {
+        if (md5 == null || md5.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "MD5 cannot be null or empty String");
+        }
+
+        if (api_key == null || api_key.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
+        }
+
+        String body;
+        if (filters == null || filters.isEmpty()) {
+            body = "{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\"}";
+        } else {
+            if (filters.size() > 10) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameter 'output_filters' takes at most 10 values (" + String.valueOf(filters.size()) + " given).");
+            }
+
+            JSONArray json_filters = new JSONArray();
+            for (String filter : filters) {
+                json_filters.put(filter);
+            }
+            body = "{\"api_key\":\"" + api_key + "\", \"md5\":\"" + md5 + "\", \"output_filters\": " + json_filters.toString() + "}";
+        }
+
+        HttpResponse response;
+        try {
+            response = Unirest.post(Intel.URL_INTEL_DOWNLOAD_REPORT)
+                    .header("Content-Type", "application/json")
+                    .body(body)
+                    .asJson();
+        } catch (UnirestException e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
+        }
+
+        if (response.getStatus() == 428) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_PROCESSING, "Analysis is running");
+        } else {
+            JsonNode response_json;
+            try {
+                response_json = new JsonNode(response.getBody().toString());
+            } catch (Exception e) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Error loading Deepviz response");
+            }
+
+            if (response.getStatus() == 200) {
+                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_SUCCESS, response_json.getObject().get("data").toString());
+            } else {
+                String errMsg = response_json.getObject().get("errmsg").toString();
+                DeepvizResultStatus code;
+                if (response.getStatus() >= 500) {
+                    code = DeepvizResultStatus.DEEPVIZ_STATUS_SERVER_ERROR;
+                } else {
+                    code = DeepvizResultStatus.DEEPVIZ_STATUS_CLIENT_ERROR;
+                }
+                return new Result(code, String.valueOf(response.getStatus()) + " - " + errMsg);
+            }
         }
     }
 }
