@@ -97,7 +97,7 @@ System.out.print(result.getMsg());
 To retrieve only specific parts of the report of a specific MD5 scan
 
 ```java
-import com.deepviz.sandbox.Sandbox;
+import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
 import java.util.ArrayList;
