@@ -110,20 +110,6 @@ filters.add("classification");
 filters.add("rules");
 Result result = intel.sampleInfo("my-api-key", "MD5-hash", filters);
 
-// List of the optional filters - they can be combined together
-// "network_ip",
-// "network_ip_tcp",
-// "network_ip_udp",
-// "rules",
-// "classification",
-// "created_process",
-// "hook_user_mode",
-// "strings",
-// "created_files",
-// "hash",
-// "info",
-// "code_injection"
-
 System.out.println(result.getMsg());
 ```
 
