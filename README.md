@@ -113,7 +113,7 @@ Result result = intel.sampleInfo("my-api-key", "MD5-hash", filters);
 System.out.println(result.getMsg());
 ```
 
-To retrieve intel data about one or more IPs:
+To retrieve intel data about an IP:
 
 ```java
 import com.deepviz.intel.input.IpInfoInput;
@@ -132,7 +132,7 @@ result = intel.ipInfo("my-api-key", input);
 System.out.println(result);
 ```
 
-To retrieve intel data about IPs contacted in the last 7 days:
+To retrieve intel data about an IP with output filters:
 
 ```java
 import com.deepviz.intel.input.IpInfoInput;
@@ -152,7 +152,7 @@ result = intel.ipInfo("my-api-key", input);
 System.out.println(result);
 ```
 
-To retrieve intel data about one or more domains:
+To retrieve intel data about a domain:
 
 ```java
 import com.deepviz.intel.input.DomainInfoInput;
@@ -164,24 +164,14 @@ import java.util.List;
 
 Intel intel = new Intel();
 
-List<String> filters = new ArrayList<String>();
-filters.add("sub_domains");
-// List of the optional filters - they can be combined together
-// "whois",
-// "sub_domains"
-
-List<String> domains = new ArrayList<String>();
-domains.add("google.com");
-
 DomainInfoInput input = new DomainInfoInput();
-input.setDomains(domains);
-input.setFilters(filters);
+input.setDomain("www.google.com");
 
 Result result = intel.domainInfo("my-api-key", input);
 System.out.println(result);
 ```
 
-To retrieve newly registered domains in the last 7 days:
+To retrieve intel data about a domain with output filters:
 
 ```java
 import com.deepviz.intel.input.DomainInfoInput;
@@ -189,8 +179,13 @@ import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
 Intel intel = new Intel();
+
 DomainInfoInput input = new DomainInfoInput();
-input.setTimeDelta("7d");
+input.setDomain("www.google.com");
+
+List>String> filters = new ArrayList<String>();
+filters.add("generic_info");
+input.setFilters(filters);
 
 Result result = intel.domainInfo("my-api-key", input);
 System.out.println(result);
