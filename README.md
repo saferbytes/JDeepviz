@@ -183,7 +183,7 @@ Intel intel = new Intel();
 DomainInfoInput input = new DomainInfoInput();
 input.setDomain("www.google.com");
 
-List>String> filters = new ArrayList<String>();
+List<String> filters = new ArrayList<String>();
 filters.add("generic_info");
 input.setFilters(filters);
 
