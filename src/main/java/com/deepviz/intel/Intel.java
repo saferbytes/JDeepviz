@@ -30,42 +30,31 @@ public class Intel {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
-        if ((input.getIps() == null || input.getIps().isEmpty()) && (input.getTimeDelta() == null || input.getTimeDelta().equals(""))) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify either a list of IPs or timestamp");
-        }
-
-        String strHistory = "false";
-        if (input.isHistoryEnabled()) {
-            strHistory = "true";
+        if (input.getIp() == null || input.getIp().equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify either an IP");
         }
 
         HttpResponse response;
 
-        if (input.getIps() != null && ! input.getIps().isEmpty()) {
-            try {
-                JSONArray json_ips = new JSONArray();
-                for (String filter : input.getIps()) {
-                    json_ips.put(filter);
+        try {
+            String body;
+            if (input.getFilters() == null || input.getFilters().isEmpty()) {
+                body = "{\"api_key\":\"" + api_key + "\", \"ip\": \"" + input.getIp() + "\"}";
+            } else {
+                JSONArray json_filters = new JSONArray();
+                for (String filter : input.getFilters()) {
+                    json_filters.put(filter);
                 }
 
-                response = Unirest.post(Intel.URL_INTEL_IP)
-                        .header("Content-Type", "application/json")
-                        .body("{\"api_key\":\"" + api_key + "\", \"history\":\"" + strHistory + "\", \"ip\": " + json_ips.toString() + "}")
-                        .asJson();
-            } catch (UnirestException e) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
+                body = "{\"api_key\":\"" + api_key + "\", \"ip\": \"" + input.getIp() + "\", \"output_filters\": " + json_filters.toString() + "}";
             }
-        } else if (input.getTimeDelta() != null) {
-            try {
-                response = Unirest.post(Intel.URL_INTEL_IP)
-                        .header("Content-Type", "application/json")
-                        .body("{\"api_key\":\"" + api_key + "\", \"history\":\"" + strHistory + "\", \"time_delta\": \"" + input.getTimeDelta() + "\"}")
-                        .asJson();
-            } catch (UnirestException e) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
-            }
-        } else {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INTERNAL_ERROR, "Unexpected error");
+
+            response = Unirest.post(Intel.URL_INTEL_IP)
+                    .header("Content-Type", "application/json")
+                    .body(body)
+                    .asJson();
+        } catch (UnirestException e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         JsonNode response_json;
@@ -94,60 +83,30 @@ public class Intel {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null");
         }
 
-        if ((input.getDomains() == null || input.getDomains().isEmpty()) && (input.getTimeDelta() == null || input.getTimeDelta().equals(""))) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify either a list of domains or TimeDelta");
+        if (input.getDomain() == null || input.getDomain().equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify a domain");
         }
 
         HttpResponse response = null;
-        if (input.getDomains() != null && ! input.getDomains().isEmpty()) {
-            JSONArray json_domains = new JSONArray();
-            for (String domain : input.getDomains()) {
-                json_domains.put(domain);
-            }
-
-            try {
-                String body;
-                if (input.getFilters() == null || input.getFilters().isEmpty()) {
-                    body = "{\"api_key\":\"" + api_key + "\", \"history\":\"" + input.isHistoryEnabled() + "\", \"domain\": " + json_domains.toString() + "}";
-                } else {
-                    JSONArray json_filters = new JSONArray();
-                    for (String filter : input.getFilters()) {
-                        json_filters.put(filter);
-                    }
-
-                    body = "{\"api_key\":\"" + api_key + "\", \"history\":\"" + input.isHistoryEnabled() + "\", \"domain\": " + json_domains.toString() + ", \"output_filters\": " + json_filters.toString() + "}";
+        try {
+            String body;
+            if (input.getFilters() == null || input.getFilters().isEmpty()) {
+                body = "{\"api_key\":\"" + api_key + "\", \"domain\": \"" + input.getDomain() + "\"}";
+            } else {
+                JSONArray json_filters = new JSONArray();
+                for (String filter : input.getFilters()) {
+                    json_filters.put(filter);
                 }
 
-                response = Unirest.post(Intel.URL_INTEL_DOMAIN)
-                        .header("Content-Type", "application/json")
-                        .body(body)
-                        .asJson();
-            } catch (UnirestException e) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
+                body = "{\"api_key\":\"" + api_key + "\", \"domain\": \"" + input.getDomain() + "\", \"output_filters\": " + json_filters.toString() + "}";
             }
-        }
 
-        if (input.getTimeDelta() != null && ! input.getTimeDelta().equals("")) {
-            try {
-                String body;
-                if (input.getFilters() == null || input.getFilters().isEmpty()) {
-                    body = "{\"api_key\":\"" + api_key + "\", \"history\":\"" + input.isHistoryEnabled() + "\", \"time_delta\": \"" + input.getTimeDelta() + "\"}";
-                } else {
-                    JSONArray json_filters = new JSONArray();
-                    for (String filter : input.getFilters()) {
-                        json_filters.put(filter);
-                    }
-
-                    body = "{\"api_key\":\"" + api_key + "\", \"history\":\"" + input.isHistoryEnabled() + "\", \"time_delta\": \"" + input.getTimeDelta() + "\", \"output_filters\": " + json_filters.toString() + "}";
-                }
-
-                response = Unirest.post(Intel.URL_INTEL_DOMAIN)
-                        .header("Content-Type", "application/json")
-                        .body(body)
-                        .asJson();
-            } catch (UnirestException e) {
-                return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
-            }
+            response = Unirest.post(Intel.URL_INTEL_DOMAIN)
+                    .header("Content-Type", "application/json")
+                    .body(body)
+                    .asJson();
+        } catch (UnirestException e) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_NETWORK_ERROR, "Error while connecting to Deepviz: " + e.getMessage());
         }
 
         JsonNode response_json;

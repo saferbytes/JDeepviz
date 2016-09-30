@@ -13,7 +13,7 @@ import java.util.List;
 
 public class JDeepvizTest {
 
-    private static final String API_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
+    private static final String API_KEY = "804268c4e9c22da6f0b4188dc101b439ba04fc4b265419c8321acf5cb52f5e88";
 
     public static void main(String [] args) {
         Result result;
@@ -74,29 +74,30 @@ public class JDeepvizTest {
         System.out.println(result);
 
         // To retrieve intel data about one or more IPs:
-        List<String> ip_list = new ArrayList<String>();
-        ip_list.add("8.8.8.8");
-        ipInfoInput.setIps(ip_list);
-        ipInfoInput.setHistory(true);
+        ipInfoInput.setIp("8.8.8.8");
         result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
         System.out.println(result);
 
         // To retrieve intel data about IPs contacted in the last 7 days:
         ipInfoInput = new IpInfoInput();
-        ipInfoInput.setTimeDelta("7d");
+        ipInfoInput.setIp("8.8.8.8");
+        filters = new ArrayList<String>();
+        filters.add("generic_info");
+        ipInfoInput.setFilters(filters);
         result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
         System.out.println(result);
 
         // To retrieve intel data about one or more domains:
-        List<String> domains1 = new ArrayList<String>();
-        domains1.add("google.com");
-        domainInfoinput.setDomains(domains1);
+        domainInfoinput.setDomain("google.com");
         result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
         System.out.println(result);
 
         //To retrieve newly registered domains in the last 7 days:
         domainInfoinput = new DomainInfoInput();
-        domainInfoinput.setTimeDelta("7d");
+        domainInfoinput.setDomain("google.com");
+        filters = new ArrayList<String>();
+        filters.add("generic_info");
+        domainInfoinput.setFilters(filters);
         result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
         System.out.println(result);
 

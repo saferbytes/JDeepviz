@@ -4,17 +4,15 @@ import java.util.List;
 
 
 public class DomainInfoInput {
-    private java.util.List<String> domains;
-    private boolean history = false;
+    private String domain;
     private List<String> filters;
-    private String timeDelta;
 
-    public List<String> getDomains() {
-        return domains;
+    public String getDomain() {
+        return domain;
     }
 
-    public void setDomains(List<String> domains) {
-        this.domains = domains;
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public List<String> getFilters() {
@@ -23,21 +21,5 @@ public class DomainInfoInput {
 
     public void setFilters(List<String> filters) {
         this.filters = filters;
-    }
-
-    public String getTimeDelta() {
-        return timeDelta;
-    }
-
-    public void setTimeDelta(String timeDelta) {
-        this.timeDelta = timeDelta;
-    }
-
-    public boolean isHistoryEnabled() {
-        return history;
-    }
-
-    public void setHistory(boolean history) {
-        this.history = history;
     }
 }
