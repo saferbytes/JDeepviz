@@ -125,12 +125,8 @@ import java.util.List;
 
 Intel intel = new Intel();
 
-List<String> ip_list = new ArrayList<String>();
-ip_list.add("8.8.8.8");
-
 IpInfoInput input = new IpInfoInput();
-input.setIps(ip_list);
-input.setHistory(true);
+input.setIp("8.8.8.8");
 
 result = intel.ipInfo("my-api-key", input);
 System.out.println(result);
@@ -146,7 +142,11 @@ import com.deepviz.Result;
 Intel intel = new Intel();
 
 IpInfoInput input = new IpInfoInput();
-input.setTimeDelta("7d");
+input.setIp("8.8.8.8");
+
+List<String> filters = new ArrayList<String>();
+filters.add("generic_info");
+ipInfoInput.setFilters(filters);
 
 result = intel.ipInfo("my-api-key", input);
 System.out.println(result);

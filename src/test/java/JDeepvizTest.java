@@ -13,7 +13,7 @@ import java.util.List;
 
 public class JDeepvizTest {
 
-    private static final String API_KEY = "804268c4e9c22da6f0b4188dc101b439ba04fc4b265419c8321acf5cb52f5e88";
+    private static final String API_KEY = "00000000000000000000000000000000000000000000000000000000";
 
     public static void main(String [] args) {
         Result result;
