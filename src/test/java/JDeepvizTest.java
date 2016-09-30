@@ -1,7 +1,5 @@
 import com.deepviz.intel.input.AdvancedSearchInput;
-import com.deepviz.intel.input.DomainInfoInput;
 import com.deepviz.utils.DeepvizResultStatus;
-import com.deepviz.intel.input.IpInfoInput;
 import com.mashape.unirest.http.JsonNode;
 import com.deepviz.sandbox.Sandbox;
 import com.deepviz.utils.Result;
@@ -58,8 +56,6 @@ public class JDeepvizTest {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         Intel intel = new Intel();
-        IpInfoInput ipInfoInput = new IpInfoInput();
-        DomainInfoInput domainInfoinput = new DomainInfoInput();
 
         // Sample result
         result = intel.sampleResult(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2");
@@ -73,32 +69,24 @@ public class JDeepvizTest {
         result = intel.sampleInfo(JDeepvizTest.API_KEY, "a6ca3b8c79e1b7e2a6ef046b0702aeb2", filters);
         System.out.println(result);
 
-        // To retrieve intel data about one or more IPs:
-        ipInfoInput.setIp("8.8.8.8");
-        result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
+        // To retrieve intel data about an IP:
+        result = intel.ipInfo(JDeepvizTest.API_KEY, "8.8.8.8", null);
         System.out.println(result);
 
-        // To retrieve intel data about IPs contacted in the last 7 days:
-        ipInfoInput = new IpInfoInput();
-        ipInfoInput.setIp("8.8.8.8");
+        // To retrieve intel data about an IP with output filters:
         filters = new ArrayList<String>();
         filters.add("generic_info");
-        ipInfoInput.setFilters(filters);
-        result = intel.ipInfo(JDeepvizTest.API_KEY, ipInfoInput);
+        result = intel.ipInfo(JDeepvizTest.API_KEY, "8.8.8.8", filters);
         System.out.println(result);
 
-        // To retrieve intel data about one or more domains:
-        domainInfoinput.setDomain("google.com");
-        result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
+        // To retrieve intel data about a domain:
+        result = intel.domainInfo(JDeepvizTest.API_KEY, "google.com", null);
         System.out.println(result);
 
-        //To retrieve newly registered domains in the last 7 days:
-        domainInfoinput = new DomainInfoInput();
-        domainInfoinput.setDomain("google.com");
+        // To retrieve intel data about a domain with output filters:
         filters = new ArrayList<String>();
         filters.add("generic_info");
-        domainInfoinput.setFilters(filters);
-        result = intel.domainInfo(JDeepvizTest.API_KEY, domainInfoinput);
+        result = intel.domainInfo(JDeepvizTest.API_KEY, "google.com", filters);
         System.out.println(result);
 
         // To run generic search based on strings

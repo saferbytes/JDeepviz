@@ -116,7 +116,6 @@ System.out.println(result.getMsg());
 To retrieve intel data about an IP:
 
 ```java
-import com.deepviz.intel.input.IpInfoInput;
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
@@ -125,37 +124,28 @@ import java.util.List;
 
 Intel intel = new Intel();
 
-IpInfoInput input = new IpInfoInput();
-input.setIp("8.8.8.8");
-
-result = intel.ipInfo("my-api-key", input);
+result = intel.ipInfo("my-api-key", "8.8.8.8", null);
 System.out.println(result);
 ```
 
 To retrieve intel data about an IP with output filters:
 
 ```java
-import com.deepviz.intel.input.IpInfoInput;
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
 Intel intel = new Intel();
 
-IpInfoInput input = new IpInfoInput();
-input.setIp("8.8.8.8");
-
 List<String> filters = new ArrayList<String>();
 filters.add("generic_info");
-ipInfoInput.setFilters(filters);
 
-result = intel.ipInfo("my-api-key", input);
+result = intel.ipInfo("my-api-key", "8.8.8.8", filters);
 System.out.println(result);
 ```
 
 To retrieve intel data about a domain:
 
 ```java
-import com.deepviz.intel.input.DomainInfoInput;
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
@@ -164,30 +154,22 @@ import java.util.List;
 
 Intel intel = new Intel();
 
-DomainInfoInput input = new DomainInfoInput();
-input.setDomain("www.google.com");
-
-Result result = intel.domainInfo("my-api-key", input);
+Result result = intel.domainInfo("my-api-key", "google.com", null);
 System.out.println(result);
 ```
 
 To retrieve intel data about a domain with output filters:
 
 ```java
-import com.deepviz.intel.input.DomainInfoInput;
 import com.deepviz.intel.Intel;
 import com.deepviz.Result;
 
 Intel intel = new Intel();
 
-DomainInfoInput input = new DomainInfoInput();
-input.setDomain("www.google.com");
-
 List<String> filters = new ArrayList<String>();
 filters.add("generic_info");
-input.setFilters(filters);
 
-Result result = intel.domainInfo("my-api-key", input);
+Result result = intel.domainInfo("my-api-key", "google.com", filters);
 System.out.println(result);
 ```
 

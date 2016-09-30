@@ -1,7 +1,6 @@
 package com.deepviz.intel;
 
 import com.deepviz.intel.input.AdvancedSearchInput;
-import com.deepviz.intel.input.DomainInfoInput;
 import com.deepviz.utils.DeepvizResultStatus;
 import com.deepviz.utils.Result;
 
@@ -9,9 +8,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.deepviz.intel.input.IpInfoInput;
-import org.json.JSONArray;
+
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,28 +24,28 @@ public class Intel {
     public static final String URL_INTEL_DOMAIN            = "https://api.deepviz.com/intel/network/domain";
     public static final String URL_INTEL_SEARCH_ADVANCED   = "https://api.deepviz.com/intel/search/advanced";
 
-    public Result ipInfo(String api_key, IpInfoInput input) {
+    public Result ipInfo(String api_key, String ip, List<String> filters) {
         if (api_key == null || api_key.equals("")) {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null or empty String");
         }
 
-        if (input.getIp() == null || input.getIp().equals("")) {
-            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify either an IP");
+        if (ip == null || ip.equals("")) {
+            return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify an IP");
         }
 
         HttpResponse response;
 
         try {
             String body;
-            if (input.getFilters() == null || input.getFilters().isEmpty()) {
-                body = "{\"api_key\":\"" + api_key + "\", \"ip\": \"" + input.getIp() + "\"}";
+            if (filters == null || filters.isEmpty()) {
+                body = "{\"api_key\":\"" + api_key + "\", \"ip\": \"" + ip + "\"}";
             } else {
                 JSONArray json_filters = new JSONArray();
-                for (String filter : input.getFilters()) {
+                for (String filter : filters) {
                     json_filters.put(filter);
                 }
 
-                body = "{\"api_key\":\"" + api_key + "\", \"ip\": \"" + input.getIp() + "\", \"output_filters\": " + json_filters.toString() + "}";
+                body = "{\"api_key\":\"" + api_key + "\", \"ip\": \"" + ip + "\", \"output_filters\": " + json_filters.toString() + "}";
             }
 
             response = Unirest.post(Intel.URL_INTEL_IP)
@@ -78,27 +77,27 @@ public class Intel {
         }
     }
 
-    public Result domainInfo(String api_key, DomainInfoInput input) {
+    public Result domainInfo(String api_key, String domain, List<String> filters) {
         if (api_key == null || api_key.equals("")) {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "API key cannot be null");
         }
 
-        if (input.getDomain() == null || input.getDomain().equals("")) {
+        if (domain == null || domain.equals("")) {
             return new Result(DeepvizResultStatus.DEEPVIZ_STATUS_INPUT_ERROR, "Parameters missing or invalid. You must specify a domain");
         }
 
         HttpResponse response = null;
         try {
             String body;
-            if (input.getFilters() == null || input.getFilters().isEmpty()) {
-                body = "{\"api_key\":\"" + api_key + "\", \"domain\": \"" + input.getDomain() + "\"}";
+            if (filters == null || filters.isEmpty()) {
+                body = "{\"api_key\":\"" + api_key + "\", \"domain\": \"" + domain + "\"}";
             } else {
                 JSONArray json_filters = new JSONArray();
-                for (String filter : input.getFilters()) {
+                for (String filter : filters) {
                     json_filters.put(filter);
                 }
 
-                body = "{\"api_key\":\"" + api_key + "\", \"domain\": \"" + input.getDomain() + "\", \"output_filters\": " + json_filters.toString() + "}";
+                body = "{\"api_key\":\"" + api_key + "\", \"domain\": \"" + domain + "\", \"output_filters\": " + json_filters.toString() + "}";
             }
 
             response = Unirest.post(Intel.URL_INTEL_DOMAIN)
